@@ -14,7 +14,7 @@ func main() {
 		fmt.Print(err)
 		TELEGRAM_APITOKEN := string(bs)
 
-		bot, err := tgbotapi.NewBotAPI(os.Getenv(TELEGRAM_APITOKEN))
+		bot, err := tgbotapi.NewBotAPI(TELEGRAM_APITOKEN)
 		if err != nil {
 			panic(err)
 		}
@@ -31,8 +31,15 @@ func main() {
 		for update := range updates {
 			if update.Message != nil {
 				log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
+				var msg tgbotapi.MessageConfig
+				switch update.Message.Command() {
+				case "start":
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Welcome! I am your bot.")
+				case "help":
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "I can help you with the following commands:\n/start - Start the bot\n/help - Display this help message")
+				default:
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "I don't know that command")
+				}
 				bot.Send(msg)
 			}
 		}
