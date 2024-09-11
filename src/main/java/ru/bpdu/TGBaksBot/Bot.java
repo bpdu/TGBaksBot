@@ -1,9 +1,7 @@
 package ru.bpdu.TGBaksBot;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendDice;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendDice.SendDiceBuilder;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -11,12 +9,19 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class Bot extends TelegramLongPollingBot{
 
+    String GREETING = "Welcome to TGBaksBot! Please, use buttons to interact with me.";
+
     @Override
     public void onUpdateReceived(Update update) {
         var msg = update.getMessage();
         String message = msg.getText();
         Long user_id = msg.getFrom().getId();
-        echoText(message, user_id);
+        if (msg.isCommand()) {
+            if (message.equals("/start")) {
+                sendText(user_id, GREETING);
+            }
+
+        }
     }
 
     @Override
@@ -39,16 +44,7 @@ public class Bot extends TelegramLongPollingBot{
     } catch (TelegramApiException e) {
         throw new RuntimeException(e);      //Any error will be printed here
     }
-
-    public void echoText(String msg, Long user_id){
-        SendMessage sm = SendMessage.builder()
-                    .chatId(user_id.toString()) 
-                    .text(msg).build();    
-        try {
-            execute(sm);                        //Actually sending the message
-        } catch (TelegramApiException e) {
-            throw new RuntimeException(e);      //Any error will be printed here
-    }
+    
 }
 }
     
