@@ -11,7 +11,9 @@ public class TgBaksBotApplication {
 
 	public static void main(String[] args) throws TelegramApiException {
 		TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-  		botsApi.registerBot(new Bot());
+		Bot bot = new Bot();                 
+		botsApi.registerBot(bot);
+		bot.sendText(54802860L, "Hello World!");  
 		SpringApplication.run(TgBaksBotApplication.class, args);
 	}
 }
